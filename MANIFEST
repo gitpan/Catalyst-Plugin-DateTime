@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+DateTime.pm
+t/Catalyst-Plugin-DateTime-0.02.t
