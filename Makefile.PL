@@ -1,3 +1,4 @@
+use strict;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
@@ -6,7 +7,7 @@ WriteMakefile(
     AUTHOR    => 'James Kiser (james.kiser@gmail.com)',
     PREREQ_PM => {
         'Catalyst'		=> '2.99',
-        'DateTime'		=> '0',
+        'DateTime'		=> '0.20',
     },
-    VERSION_FROM => 'DateTime.pm'
+    VERSION_FROM => 'lib/Catalyst/Plugin/DateTime.pm'
 );

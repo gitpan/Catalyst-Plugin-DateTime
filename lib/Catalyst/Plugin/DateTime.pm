@@ -6,7 +6,7 @@ use warnings;
 use Catalyst::Exception;
 use DateTime;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 =pod
 =head1 NAME
@@ -21,9 +21,11 @@ Catalyst::Plugin::DateTime - DateTime plugin for Catalyst.
 
     # Use DateTime objects within your Catalyst app:
     my $dt = $c->datetime(); # will return a DateTime object with local date and time
-    my $dt = $c->datetime('year' => '2005', month => '01');
+    my $dt = $c->datetime(year => '2005', month => '01');
  
     $c->datetime->mdy(); # returns current date in mdy format (i.e. 01/01/2006)
+
+    $c->dt(time_zone => 'Asia/Taipei'); # returns current date & time for argued time zone
 
 =head1 METHODS
 
@@ -34,9 +36,15 @@ Catalyst::Plugin::DateTime - DateTime plugin for Catalyst.
 Returns a L<DateTime> object.  If params are argued they will be passed to the 
 C<< DateTime->new() >> method.  Exceptions thrown by L<DateTime> will be caught by
 L<Catalyst::Exception>.
-
+ 
 If the argument list is empty, a L<DateTime> object with the local date and time
 obtained via C<< DateTime->now() >> will be returned.
+
+Uses C<< time_zone => local >> as a default.
+
+=item dt
+
+Alias to datetime.
 
 =back
 
@@ -45,15 +53,20 @@ obtained via C<< DateTime->now() >> will be returned.
 sub datetime {
 	my $c = shift;
 	my %params = @_;
+	my $tz = delete $params{time_zone} || 'local';
 
 	# use params if argued
 	if (%params) {
-		return DateTime->new(%params);
+		return DateTime->new(\%params)->set_time_zone($tz);
 	}
 	else { # otherwise use now
-		return DateTime->now(time_zone => 'local');
+		return DateTime->now(time_zone => $tz);
 	}
 }
+
+# alias $c->dt
+*dt = \&datetime;
+
  
 1;
 
@@ -64,7 +77,7 @@ sub datetime {
 This module's intention is to make the wonders of L<DateTime> easily accesible within
 a L<Catalyst> application via the L<Catalyst::Plugin> interface. 
 
-It adds a method named C<datetime> to the C<Catalyst> namespace.
+It adds the methods C<datetime> and C<dt> to the C<Catalyst> namespace.
 
 =head1 AUTHOR
 
@@ -74,7 +87,7 @@ James Kiser L<james.kiser@gmail.com>
 
 L<Catalyst>, L<DateTime>
 
-=head1 COPYRIGHT & LICNESE
+=head1 COPYRIGHT & LICENSE
 
     Copyright (c) 2006 the aforementioned author(s). All rights
     reserved. This program is free software; you can redistribute
